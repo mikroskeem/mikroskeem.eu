@@ -14,10 +14,11 @@ var downloadFiles = [
 ]
 
 var copyFiles = [
-    {type: 'js', file: './bower_components/nanobar/nanobar.js'},
+    {type: 'js', file: './bower_components/nanobar/nanobar.min.js'},
     {type: 'js', file: './bower_components/lazysizes/lazysizes.min.js'},
     {type: 'js', file: './bower_components/marked/marked.min.js'},
     {type: 'js', file: './bower_components/requirejs/require.js'},
+    {type: 'css', file: './bower_components/font-awesome/css/font-awesome.min.css'},
     {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.eot'},
     {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.svg'},
     {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.ttf'},

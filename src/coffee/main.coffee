@@ -47,7 +47,7 @@ stwbtn.addEventListener "click", ->
 require [
   '/static/js/marked.min.js'
   '/static/js/lazysizes.min.js'
-  '/static/js/nanobar.js'
+  '/static/js/nanobar.min.js'
 ], (marked,lazysizes, progress) ->
   content = document.getElementById "content"
   backButton = document.getElementById "backbutton"
