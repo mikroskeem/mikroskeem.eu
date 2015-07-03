@@ -64,7 +64,6 @@ require [
     cssFiles = [
       '/static/css/bootstrap.min.css'
       '/static/css/font-awesome.min.css'
-#      '/static/css/progressjs.min.css'
       '/static/css/index.css'
     ]
     raf = requestAnimationFrame or mozRequestAnimationFrame or webkitRequestAnimationFrame or msRequestAnimationFrame 
