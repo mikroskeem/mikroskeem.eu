@@ -1,0 +1,32 @@
+{
+  "name": "mikroskeem.eu",
+  "version": "0.0.1",
+  "description": "my personal homepage",
+  "main": "server.js",
+  "scripts": {
+    "build": "npm install && bower install && gulp",
+    "test": "cd dest && python3 -m http.server 8080"
+  },
+  "keywords": [
+    "html5",
+    "javascript",
+    "css",
+    "bootstrap"
+  ],
+  "author": "mikroskeem",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "coffee-script": "^1.9.3",
+    "gulp-debug": "^2.0.1"
+  },
+  "dependencies": {
+    "del": "^1.2.0",
+    "gulp": "^3.9.0",
+    "gulp-closure-compiler": "^0.2.20",
+    "gulp-coffee": "^2.3.1",
+    "gulp-download": "0.0.1",
+    "gulp-jade": "^1.0.1",
+    "gulp-minify-css": "^1.2.0"
+  },
+  "private": true
+}

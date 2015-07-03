@@ -1,0 +1,34 @@
+{
+  "name": "mikroskeem.eu",
+  "version": "0.0.1",
+  "authors": [
+    "Mark Vainomaa <mikroskeem@mikroskeem.eu>"
+  ],
+  "description": "my personal homepage",
+  "main": "server.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "html",
+    "javascript",
+    "css",
+    "bootstrap"
+  ],
+  "license": "UNLICENSED",
+  "homepage": "https://mikroskeem.eu",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lazysizes": "~1.1.3",
+    "marked": "~0.3.3",
+    "requirejs": "~2.1.18",
+    "nanobar": "mikroskeem/nanobar#~0.2.0",
+    "font-awesome": "~4.3.0"
+  }
+}
