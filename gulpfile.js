@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
     download = require('gulp-download'),
     cssMin = require('gulp-minify-css'),
-    debug = require('gulp-debug'),
+//    debug = require('gulp-debug'),
     closureCompiler = require('gulp-closure-compiler'),
     jade = require('gulp-jade'),
     del = require('del');
@@ -37,7 +37,7 @@ gulp.task('coffee', function(){
 gulp.task('compileindex', function(){
     gulp.src('./src/jade/*.jade')
     .pipe(jade())
-    .pipe(debug({title: 'unicorn:'}))
+//    .pipe(debug({title: 'unicorn:'}))
     .pipe(gulp.dest(finalDest+'./'))
 });
 
