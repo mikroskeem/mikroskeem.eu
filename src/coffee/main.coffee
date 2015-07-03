@@ -120,7 +120,7 @@ require [
                 url = "/pages/main"
               else
                 url = href
-              loadPage(url.replace "/pages", "")
+              loadPage(url.replace "/pages/", "")
               history.pushState(null,null,url)
               return
             , false
