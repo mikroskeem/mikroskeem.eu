@@ -116,7 +116,7 @@ require [
           return
       return  
         
-    req.open "GET", "/pages/"+name+".md?"+(new Date).getTime(), true
+    req.open "GET", "/pages/"+name+".md", true
     req.setRequestHeader("X-Requested-With", "XMLHttpRequest")
     req.send null
     return
