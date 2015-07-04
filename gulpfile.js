@@ -52,28 +52,8 @@ var files = [
         finalName: 'index.min.css'
     },
     {
-        type: 'css',
-        file: './bower_components/font-awesome/css/font-awesome.min.css'
-    },
-    {
-        type: 'font',
-        file: './bower_components/font-awesome/fonts/fontawesome-webfont.eot'
-    },
-    {
-        type: 'font',
-        file: './bower_components/font-awesome/fonts/fontawesome-webfont.svg'
-    },
-    {
-        type: 'font',
-        file: './bower_components/font-awesome/fonts/fontawesome-webfont.ttf'
-    },
-    {
-        type: 'font',
-        file: './bower_components/font-awesome/fonts/fontawesome-webfont.woff'
-    },
-    {
-        type: 'font',
-        file: './bower_components/font-awesome/fonts/fontawesome-webfont.woff2'
+        type: 'img',
+        file: 'https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/white/svg/arrow-circle-up.svg'
     }
 ];
 
@@ -95,6 +75,10 @@ gulp.task('default', [], function(){
                 break;
             case 'font': /* Just copy them */
                 dest = finalDest+'./static/fonts/';
+                src.pipe(gulp.dest(dest));
+                break;
+            case 'img':
+                dest = finalDest+'./static/img/';
                 src.pipe(gulp.dest(dest));
                 break;
             case 'jade':
