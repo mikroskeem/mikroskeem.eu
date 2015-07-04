@@ -2,109 +2,104 @@ var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
     download = require('gulp-download'),
     cssMin = require('gulp-minify-css'),
-//    debug = require('gulp-debug'),
-    closureCompiler = require('gulp-closure-compiler'),
+    uglify = require('gulp-uglify'),
     jade = require('gulp-jade'),
-    del = require('del');
+    nop = require('gulp-nop'),
+    rename = require('gulp-rename'),
+    path = require('path');
 
 var finalDest = "./dest/"
 
-var downloadFiles = [
-    {type: 'css', url: 'https://bootswatch.com/darkly/bootstrap.min.css'}
-]
-
-var copyFiles = [
-    {type: 'js', file: './bower_components/nanobar/nanobar.min.js'},
-    {type: 'js', file: './bower_components/lazysizes/lazysizes.min.js'},
-    {type: 'js', file: './bower_components/marked/marked.min.js'},
-    {type: 'js', file: './bower_components/requirejs/require.js'},
-    {type: 'css', file: './bower_components/font-awesome/css/font-awesome.min.css'},
-    {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.eot'},
-    {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.svg'},
-    {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.ttf'},
-    {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.woff'},
-    {type: 'font', file: './bower_components/font-awesome/fonts/fontawesome-webfont.woff2'}
+var files = [
+    {
+        type: 'jade',
+        file: './src/jade/index.jade',
+        finalName: 'index.html'
+    },
+    {
+        type: 'js', 
+        file: './bower_components/nanobar/nanobar.min.js'
+    },
+    {
+        type: 'js',
+        file: './bower_components/lazysizes/lazysizes.min.js'
+    },
+    {
+        type: 'js',
+        file: './bower_components/marked/marked.min.js'
+    },
+    {
+        type: 'js',
+        minify: true,
+        file: './bower_components/requirejs/require.js',
+        finalName: 'require.min.js'
+    },
+    {
+        type: 'js',
+        coffeeCompile: true,
+        minify: true,
+        file: './src/coffee/main.coffee',
+        finalName: 'main.min.js'
+    },
+    {
+        type: 'css',
+        file: 'https://bootswatch.com/darkly/bootstrap.min.css'
+    },
+    {
+        type: 'css',
+        minify: true,
+        file: './src/css/index.css',
+        finalName: 'index.min.css'
+    },
+    {
+        type: 'css',
+        file: './bower_components/font-awesome/css/font-awesome.min.css'
+    },
+    {
+        type: 'font',
+        file: './bower_components/font-awesome/fonts/fontawesome-webfont.eot'
+    },
+    {
+        type: 'font',
+        file: './bower_components/font-awesome/fonts/fontawesome-webfont.svg'
+    },
+    {
+        type: 'font',
+        file: './bower_components/font-awesome/fonts/fontawesome-webfont.ttf'
+    },
+    {
+        type: 'font',
+        file: './bower_components/font-awesome/fonts/fontawesome-webfont.woff'
+    },
+    {
+        type: 'font',
+        file: './bower_components/font-awesome/fonts/fontawesome-webfont.woff2'
+    }
 ];
 
-gulp.task('compile', ["minifyjs", "minifycss", "compileindex"]);
-
-gulp.task('coffee', function(){
-    return gulp.src('./src/coffee/main.coffee')
-        .pipe(coffee({bare: true}))
-        .pipe(gulp.dest('./src/compiled', {overwrite: true}))
-});
-
-gulp.task('compileindex', function(){
-    gulp.src('./src/jade/*.jade')
-    .pipe(jade())
-//    .pipe(debug({title: 'unicorn:'}))
-    .pipe(gulp.dest(finalDest+'./'))
-});
-
-gulp.task('minifyjs', ["coffee"], function(){
-    return gulp.src('./src/compiled/*.*')
-        .pipe(closureCompiler({
-            compilerPath: '/usr/share/java/closure-compiler/closure-compiler.jar',
-            fileName: 'main.min.js',
-            compilerFlags: {
-                jscomp_off: [ /* FUCK THOSE DAMN WARNINGS */
-                    'undefinedVars',
-                    'checkVars',
-                    'checkTypes',
-                    'conformanceViolations',
-                    'externsValidation',
-                    'fileoverviewTags',
-                    'globalThis',
-                    'invalidCasts',
-                    'misplacedTypeAnnotation',
-                    'nonStandardJsDocs',
-                    'suspiciousCode',
-                    'unknownDefines',
-                    'uselessCode',
-                ],
-//                compilation_level: 'ADVANCED_OPTIMIZATIONS'
-            }
-         }))
-         .pipe(gulp.dest(finalDest+'./static/js/', {overwrite: true}));
-});
-
-gulp.task('minifycss', function(){
-    gulp.src("./src/css/*.css")
-    .pipe(cssMin())
-    .pipe(gulp.dest(finalDest+"./static/css"));
-    
-});
-
-gulp.task('cleantmp', ["copy"], function(cb){
-    del([
-        './src/compiled'
-    ], cb);
-});
-
-gulp.task('download', function(){
-    downloadFiles.forEach(function(file){
+gulp.task('default', [], function(){
+    files.forEach(function(file){
+        var src = (RegExp("http(s)?:").test(file.file))?download(file.file):gulp.src(file.file);
+        var name = 'finalName' in file?file.finalName:path.basename(file.file);
         var dest;
-        if(file.type === 'css') {
-            dest = './static/css'
-        } else if(file.type === 'js') {
-            dest = './static/js'
+        switch(file.type){
+            case 'js':
+                dest = finalDest+'./static/js/';
+                src.pipe(('coffeeCompile' in file && file.coffeeCompile)?coffee({bare: true}):nop())
+                   .pipe(('minify' in file && file.minify)?uglify():nop())
+                   .pipe(rename(name)).pipe(gulp.dest(dest));
+                break;
+            case 'css':
+                dest = finalDest+'./static/css/';
+                src.pipe(('minify' in file && file.minify)?cssMin():nop()).pipe(rename(name)).pipe(gulp.dest(dest));
+                break;
+            case 'font': /* Just copy them */
+                dest = finalDest+'./static/fonts/';
+                src.pipe(gulp.dest(dest));
+                break;
+            case 'jade':
+                dest = finalDest+'./';
+                src.pipe(jade()).pipe(rename(name)).pipe(gulp.dest(dest));
         }
-        download(file.url).pipe(gulp.dest(finalDest+dest, {overwrite: true}))
     });
 });
-
-gulp.task('copy', ["download", "compile"], function(){
-    copyFiles.forEach(function(file){
-        var dest;
-        if(file.type === 'css') {
-            dest = './static/css'
-        } else if(file.type === 'js') {
-            dest = './static/js'
-        } else if(file.type === 'font') {
-            dest = './static/fonts'
-        }
-        gulp.src(file.file).pipe(gulp.dest(finalDest+dest, {overwrite: true}))
-    });
-});
-
-gulp.task('default', ["cleantmp"]);

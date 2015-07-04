@@ -39,4 +39,4 @@ server {
 ```
 
 ### Known bugs
-If you have **_JAVA_OPTIONS** in environment, remove it before building (Look at this [issue](https://github.com/steida/gulp-closure-compiler/issues/33))
+nginx config should be fixed
