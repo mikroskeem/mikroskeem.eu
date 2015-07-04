@@ -23,11 +23,12 @@ Use this config:
 server {
 	server_name	mikroskeem.eu;
 	listen		50001;
+
+	root	/var/www/mikroskeem.eu;
 	location / {
-		root	/var/www/mikroskeem.eu;
 		try_files $uri /index.html;
 	}
-	location /pages {
+	location ~ \.(md)$ {
 		if ($http_x_requested_with != XMLHttpRequest) {
 			return 403;
 		}
