@@ -12,7 +12,7 @@ $ cd mikroskeem.eu
 $ bower install
 $ npm install
 $ mkdir dest/pages
-$ echo "# Hello" > dest/pages/main.md
+$ npm run test-page
 ```
 
 ### Configuring web server

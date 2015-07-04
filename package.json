@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "build": "npm install && bower install && gulp",
-    "test": "cd dest && python3 -m http.server 8080"
+    "test": "cd dest && python3 -m http.server 8080",
+    "test-page": "mkdir -p dest/pages && echo '# Hello' > dest/pages/main.md"
+
   },
   "keywords": [
     "html5",
