@@ -1,4 +1,5 @@
 #stw {
+    text-align: center;
     position: fixed;
     opacity: 0;
     overflow: hidden;
@@ -11,6 +12,7 @@
     right: 30px;
     bottom: 30px;
     padding-top: 2px;
+    visibility: hidden;
     -webkit-transition: all .5s ease-in-out;
     -moz-transition: all .5s ease-in-out;
     -ms-transition: all .5s ease-in-out;
@@ -41,4 +43,10 @@
 .lazyloaded {
     opacity: 1;
     transition: opacity 300ms
+}
+.heading {
+    text-align: center;
+}
+#backbutton {
+    visibility: hidden;
 }

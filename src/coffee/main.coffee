@@ -56,23 +56,6 @@ require [
   customRenderer = new marked.Renderer
   loadingBar = new progress
     bg: '#848484'
-  loadCss = (url) ->
-    link = document.createElement "link"
-    link.type = "text/css"
-    link.rel = "stylesheet"
-    link.href = url
-    document.getElementsByTagName("head")[0].appendChild link
-  do ->
-    cssFiles = [
-      '/static/css/bootstrap.min.css'
-      '/static/css/font-awesome.min.css'
-      '/static/css/index.css'
-    ]
-    raf = requestAnimationFrame or mozRequestAnimationFrame or webkitRequestAnimationFrame or msRequestAnimationFrame 
-    raf ->
-      loadCss file for file in cssFiles
-      return
-    return
   getPage = ->
     splitUrl = window.location.pathname.split "/"
     if splitUrl.length is 3
