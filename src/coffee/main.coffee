@@ -3,12 +3,14 @@ googleAnalytics = (b, c, d, e, f, g, h) ->
   b.GoogleAnalyticsObject = f
   b[f] = b[f] || ->
     (b[f].q = b[f].q or []).push arguments
+    return
   b[f].l = 1 * new Date
   g = c.createElement d
   h = c.getElementsByTagName(d)[0]
   g.async = 1
   g.src = e
   h.parentNode.insertBefore g, h
+  return
 googleAnalytics window, document, "script", "//www.google-analytics.com/analytics.js", "ga"
 ga "create", "UA-53567925-1", "auto"
 ga "send", "pageview"
