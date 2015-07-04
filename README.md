@@ -1,7 +1,8 @@
 # mikroskeem's peronal site
 
-So, here it is, my awesome webpage.
+So, here it is, my awesome webpage. It was created with idea to render everything in browser, not in server.
 
+This idea gives portability, I can migrate my page to every server, since there is no server-side code requred (but webserver configuring is).
 
 ### Building
 You need to have gulp and bower in path (`npm install -g gulp bower`)
