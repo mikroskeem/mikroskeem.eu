@@ -49,10 +49,11 @@ stwbtn.addEventListener "click", ->
 require ['/static/js/require-cfg.min.js'], ->
   require [
     'marked'
+    'marked_customrenderer'
     'lazysizes'
     'nanobar'
     'jquery'
-  ], (marked,lazysizes, progress, $) ->
+  ], (marked, customRenderer, lazysizes, progress, $) ->
     content = document.getElementById "content"
     backButton = document.getElementById "backbutton"
     customRenderer = new marked.Renderer
@@ -107,20 +108,6 @@ require ['/static/js/require-cfg.min.js'], ->
         return
       return
     window.addEventListener "popstate", getPage
-    customRenderer.heading = (b, c, d) ->
-      return "<h" + c + ' class="heading" id="' + this.options.headerPrefix + d.toLowerCase().replace(/[^\w]+/g, "-") + '">' + b + "</h" + c + ">\n"
-    customRenderer.link = (b, c, d) ->
-      e = ""
-      if /INNER../.test(b)
-        e = '<a class="innerUrl" href="/pages/' + b.replace("INNER..", "") + '"'
-      else
-        e = '<a target="_blank" href="' + b + '"'
-      e += ' title="' + c + '"' if c
-      return e + ">" + d + "</a>"
-    customRenderer.image = (b, c, d) ->
-      b = '<img class="img-responsive lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' + b + '" alt="' + d + '"'
-      b += ' title="' + c + '"' if c
-      return b + " />"
     getPage()
     return
   return
