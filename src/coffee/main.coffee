@@ -46,7 +46,7 @@ stwbtn.addEventListener "click", ->
   return 
 
 # Get modules
-require ['/static/js/require-config.min.js'], ->
+require ['/static/js/require-cfg.min.js'], ->
   require [
     'marked'
     'lazysizes'
