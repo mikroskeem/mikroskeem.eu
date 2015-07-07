@@ -36,6 +36,10 @@ var files = [
     },
     {
         type: 'js',
+        file: './bower_components/jquery/dist/jquery.min.js'
+    },
+    {
+        type: 'js',
         coffeeCompile: true,
         minify: true,
         file: './src/coffee/main.coffee',

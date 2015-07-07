@@ -51,7 +51,8 @@ require ['/static/js/require-cfg.min.js'], ->
     'marked'
     'lazysizes'
     'nanobar'
-  ], (marked,lazysizes, progress) ->
+    'jquery'
+  ], (marked,lazysizes, progress, $) ->
     content = document.getElementById "content"
     backButton = document.getElementById "backbutton"
     customRenderer = new marked.Renderer
@@ -60,66 +61,50 @@ require ['/static/js/require-cfg.min.js'], ->
     getPage = ->
       splitUrl = window.location.pathname.split "/"
       if splitUrl.length is 3
-        loadPage(splitUrl[2])
+        loadPage splitUrl[2]
       else
-        loadPage("main")
+        loadPage "main"
       return
     loadPage = (name) ->
-      req = new XMLHttpRequest
-      req.addEventListener 'readystatechange', ->
-        unless req.readyState is 4
-          return
-        fourHundredFour = false
-        loadingBar.go 20
-        if req.status is 404
-          console.log "no such page"
-          fourHundredFour = true
-        else if req.status is 403 or req.status is 500
-          throw new Error "Something went wrong with server"
-        else unless req.status is 200
-          throw new Error "Unexpected response code: "+req.status
-        unless fourHundredFour #req.responseText.length is 0
-          if name is "main"
-            body = req.responseText
-          else
-            body = req.responseText + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
-        else
-          body = "# 404 :(\n\nYou should go back to [main page](INNER..main)."
+      loadingBar.go 20
+      req = $.get "/pages/" + name + ".md"
+      req.done (res, status, xhr) ->
         loadingBar.go 40
+        etag = xhr.getResponseHeader "ETag"
+        body = res
+        unless name is "main"
+          body = res + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
         marked body,
           renderer: customRenderer
-        , (err,renderedBody) ->
+        , (err, renderedBody) ->
           loadingBar.go 60
           if err
-            content.innerHTML = "marked.js error: "+err
-            return
-          else
-            content.innerHTML = renderedBody
-            innerUrls = document.getElementsByClassName "innerUrl"
-            i = 0
-            while i < innerUrls.length
-              innerUrls[i].addEventListener 'click', (event) ->
-                event.preventDefault()
-                href = event.target.getAttribute "href"
-                if href is "/"
-                  url = "/pages/main"
-                else
-                  url = href
-                loadPage(url.replace "/pages/", "")
-                history.pushState(null,null,url)
-                return
-              , false
-              i++
-            loadingBar.go 80
-            customScript = document.getElementsByClassName "customscript"
-            (new Function(["marked", "customRenderer"], atob(customScript[0].value)))(marked, customRenderer) if 0 < customScript.length #passing marked and customRenderer cuz most of scripts want it
+            $(content).html "marked.js error: "+err
             loadingBar.go 100
             return
+          $(content).html renderedBody
+          loadingBar.go 100
+          $(".innerUrl").each (i, item) ->
+            $(item).click (e) ->
+              e.preventDefault()
+              href = e.target.getAttribute "href"
+              url = href
+              if href is "/"
+                url = "/pages/main"
+              loadPage(url.replace "/pages/", "")
+              history.pushState null, null, url
+              return
+            return
+          return
+        customScript = $(".customscript")
+        (new Function(atob customScript[0].value))() if customScript.length is 1 #New scripts will start using RequireJS
         return
-
-      req.open "GET", "/pages/"+name+".md", true
-      req.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-      req.send null
+      req.fail (xhr) ->
+        console.log xhr
+        console.log "Request failed, http code", xhr.status
+        $(content).html "<h1 class='heading'>404</h1>"
+        loadingBar.go 100
+        return
       return
     window.addEventListener "popstate", getPage
     customRenderer.heading = (b, c, d) ->

@@ -40,3 +40,7 @@ server {
 
 ### Known bugs
 nginx config should be fixed
+
+### Why did I started using jQuery, even if I promised not to?
+
+Honestly, it is pain to write XMLHttpRequest functions by hand. It makes code worse and makes readability bad.

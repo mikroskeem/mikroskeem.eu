@@ -4,3 +4,4 @@ requirejs.config
     marked: 'marked.min'
     lazysizes: 'lazysizes.min'
     nanobar: 'nanobar.min'
+    jquery: 'jquery.min'
