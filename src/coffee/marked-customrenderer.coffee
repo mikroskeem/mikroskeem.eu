@@ -14,4 +14,4 @@ define ['marked'], (marked) ->
     b = '<img class="img-responsive lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' + b + '" alt="' + d + '"'
     (b += ' title="' + c + '"') if c
     return b + " />"
-  return customRenderer: customRenderer
+  return customRenderer

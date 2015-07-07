@@ -54,6 +54,9 @@ require ['/static/js/require-cfg.min.js'], ->
     'nanobar'
     'jquery'
   ], (marked, customRenderer, lazysizes, progress, $) ->
+    marked.setOptions
+      renderer: customRenderer
+      sanitize: false
     content = document.getElementById "content"
     backButton = document.getElementById "backbutton"
     customRenderer = new marked.Renderer
@@ -75,9 +78,7 @@ require ['/static/js/require-cfg.min.js'], ->
         body = res
         unless name is "main"
           body = res + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
-        marked body,
-          renderer: customRenderer
-        , (err, renderedBody) ->
+        marked body, (err, renderedBody) ->
           loadingBar.go 60
           if err
             $(content).html "marked.js error: "+err
