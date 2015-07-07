@@ -46,94 +46,96 @@ stwbtn.addEventListener "click", ->
   return 
 
 # Get modules
-require [
-  '/static/js/marked.min.js'
-  '/static/js/lazysizes.min.js'
-  '/static/js/nanobar.min.js'
-], (marked,lazysizes, progress) ->
-  content = document.getElementById "content"
-  backButton = document.getElementById "backbutton"
-  customRenderer = new marked.Renderer
-  loadingBar = new progress
-    bg: '#848484'
-  getPage = ->
-    splitUrl = window.location.pathname.split "/"
-    if splitUrl.length is 3
-      loadPage(splitUrl[2])
-    else
-      loadPage("main")
-    return
-  loadPage = (name) ->
-    req = new XMLHttpRequest
-    req.addEventListener 'readystatechange', ->
-      unless req.readyState is 4
-        return
-      fourHundredFour = false
-      loadingBar.go 20
-      if req.status is 404
-        console.log "no such page"
-        fourHundredFour = true
-      else if req.status is 403 or req.status is 500
-        throw new Error "Something went wrong with server"
-      else unless req.status is 200
-        throw new Error "Unexpected response code: "+req.status
-      unless fourHundredFour #req.responseText.length is 0
-        if name is "main"
-          body = req.responseText
-        else
-          body = req.responseText + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
+require ['/static/js/require-config.min.js'], ->
+  require [
+    'marked'
+    'lazysizes'
+    'nanobar'
+  ], (marked,lazysizes, progress) ->
+    content = document.getElementById "content"
+    backButton = document.getElementById "backbutton"
+    customRenderer = new marked.Renderer
+    loadingBar = new progress
+      bg: '#848484'
+    getPage = ->
+      splitUrl = window.location.pathname.split "/"
+      if splitUrl.length is 3
+        loadPage(splitUrl[2])
       else
-        body = "# 404 :(\n\nYou should go back to [main page](INNER..main)."
-      loadingBar.go 40
-      marked body,
-        renderer: customRenderer
-      , (err,renderedBody) ->
-        loadingBar.go 60
-        if err
-          content.innerHTML = "marked.js error: "+err
+        loadPage("main")
+      return
+    loadPage = (name) ->
+      req = new XMLHttpRequest
+      req.addEventListener 'readystatechange', ->
+        unless req.readyState is 4
           return
+        fourHundredFour = false
+        loadingBar.go 20
+        if req.status is 404
+          console.log "no such page"
+          fourHundredFour = true
+        else if req.status is 403 or req.status is 500
+          throw new Error "Something went wrong with server"
+        else unless req.status is 200
+          throw new Error "Unexpected response code: "+req.status
+        unless fourHundredFour #req.responseText.length is 0
+          if name is "main"
+            body = req.responseText
+          else
+            body = req.responseText + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
         else
-          content.innerHTML = renderedBody
-          innerUrls = document.getElementsByClassName "innerUrl"
-          i = 0
-          while i < innerUrls.length
-            innerUrls[i].addEventListener 'click', (event) ->
-              event.preventDefault()
-              href = event.target.getAttribute "href"
-              if href is "/"
-                url = "/pages/main"
-              else
-                url = href
-              loadPage(url.replace "/pages/", "")
-              history.pushState(null,null,url)
-              return
-            , false
-            i++
-          loadingBar.go 80
-          customScript = document.getElementsByClassName "customscript"
-          (new Function(["marked", "customRenderer"], atob(customScript[0].value)))(marked, customRenderer) if 0 < customScript.length #passing marked and customRenderer cuz most of scripts want it
-          loadingBar.go 100
-          return
-      return  
-        
-    req.open "GET", "/pages/"+name+".md", true
-    req.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-    req.send null
+          body = "# 404 :(\n\nYou should go back to [main page](INNER..main)."
+        loadingBar.go 40
+        marked body,
+          renderer: customRenderer
+        , (err,renderedBody) ->
+          loadingBar.go 60
+          if err
+            content.innerHTML = "marked.js error: "+err
+            return
+          else
+            content.innerHTML = renderedBody
+            innerUrls = document.getElementsByClassName "innerUrl"
+            i = 0
+            while i < innerUrls.length
+              innerUrls[i].addEventListener 'click', (event) ->
+                event.preventDefault()
+                href = event.target.getAttribute "href"
+                if href is "/"
+                  url = "/pages/main"
+                else
+                  url = href
+                loadPage(url.replace "/pages/", "")
+                history.pushState(null,null,url)
+                return
+              , false
+              i++
+            loadingBar.go 80
+            customScript = document.getElementsByClassName "customscript"
+            (new Function(["marked", "customRenderer"], atob(customScript[0].value)))(marked, customRenderer) if 0 < customScript.length #passing marked and customRenderer cuz most of scripts want it
+            loadingBar.go 100
+            return
+        return
+
+      req.open "GET", "/pages/"+name+".md", true
+      req.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+      req.send null
+      return
+    window.addEventListener "popstate", getPage
+    customRenderer.heading = (b, c, d) ->
+      return "<h" + c + ' class="heading" id="' + this.options.headerPrefix + d.toLowerCase().replace(/[^\w]+/g, "-") + '">' + b + "</h" + c + ">\n"
+    customRenderer.link = (b, c, d) ->
+      e = ""
+      if /INNER../.test(b)
+        e = '<a class="innerUrl" href="/pages/' + b.replace("INNER..", "") + '"'
+      else
+        e = '<a target="_blank" href="' + b + '"'
+      e += ' title="' + c + '"' if c
+      return e + ">" + d + "</a>"
+    customRenderer.image = (b, c, d) ->
+      b = '<img class="img-responsive lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' + b + '" alt="' + d + '"'
+      b += ' title="' + c + '"' if c
+      return b + " />"
+    getPage()
     return
-  window.addEventListener "popstate", getPage
-  customRenderer.heading = (b, c, d) ->
-    return "<h" + c + ' class="heading" id="' + this.options.headerPrefix + d.toLowerCase().replace(/[^\w]+/g, "-") + '">' + b + "</h" + c + ">\n"
-  customRenderer.link = (b, c, d) ->
-    e = ""
-    if /INNER../.test(b) 
-      e = '<a class="innerUrl" href="/pages/' + b.replace("INNER..", "") + '"'
-    else
-      e = '<a target="_blank" href="' + b + '"'
-    e += ' title="' + c + '"' if c
-    return e + ">" + d + "</a>"
-  customRenderer.image = (b, c, d) ->
-    b = '<img class="img-responsive lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' + b + '" alt="' + d + '"'
-    b += ' title="' + c + '"' if c
-    return b + " />"
-  getPage()
   return

@@ -42,6 +42,13 @@ var files = [
         finalName: 'main.min.js'
     },
     {
+        type: 'js',
+        coffeeCompile: true,
+        minify: true,
+        file: './src/coffee/require-cfg.coffee',
+        finalName: 'require-cfg.min.js'
+    },
+    {
         type: 'css',
         file: 'https://bootswatch.com/darkly/bootstrap.min.css'
     },
