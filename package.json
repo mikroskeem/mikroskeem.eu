@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "my personal homepage",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/mikroskeem/mikroskeem.eu.git"
+  },
   "scripts": {
     "build": "npm install && bower install && gulp",
     "test": "node test-server.js",
