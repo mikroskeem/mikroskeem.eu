@@ -1,4 +1,4 @@
-# mikroskeem's peronal site
+# mikroskeem's personal site
 
 So, here it is, my awesome webpage. It was created with idea to render everything in browser, not in server.
 
