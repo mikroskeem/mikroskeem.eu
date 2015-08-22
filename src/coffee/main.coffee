@@ -35,13 +35,9 @@ scrollTo = (b, c, d) ->
   return
 stwbtn = document.getElementById "stw"
 document.addEventListener "scroll", ->
-  if document.body.scrollTop > 100
-    stwbtn.className = "show"
-  else
-    stwbtn.className = ""
+  stwbtn.className = if document.body.scrollTop > 100 then "show" else ""
   return
 stwbtn.addEventListener "click", ->
-  console.log "back to top"
   scrollTo document.body, document.body.offsetTop, 400
   return
 
@@ -67,7 +63,6 @@ require ['/static/js/require-cfg.min.js'], ->
       splitUrl.shift() # Remove (always) empty item
       if splitUrl[0] is "index.html"
         splitUrl.shift()
-      console.log splitUrl
       if splitUrl.length >= 2
         unless splitUrl[1] is ""
           loadPage splitUrl[1]
@@ -78,7 +73,7 @@ require ['/static/js/require-cfg.min.js'], ->
       return
     loadPage = (name) ->
       loadingBar.go 20
-      req = $.get "/pages/" + name + ".md"
+      req = $.get "/pages/#{name}.md"
       req.done (res, status, xhr) ->
         loadingBar.go 40
         etag = xhr.getResponseHeader "ETag"
@@ -110,8 +105,7 @@ require ['/static/js/require-cfg.min.js'], ->
         return
       req.fail (xhr) ->
         console.log xhr
-        console.log "Request failed, http code", xhr.status
-        $(content).html "<h1 class='heading'>404</h1>"
+        $(content).html "<h1 class='heading'>#{xhr.status}</h1>"
         loadingBar.go 100
         return
       return
