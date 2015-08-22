@@ -21,25 +21,35 @@ nginx is preferred
 
 Use this config:
 ```
-server {
-	server_name	mikroskeem.eu;
-	listen		50001;
-
-	root	/var/www/mikroskeem.eu;
-	location / {
-		try_files $uri /index.html;
-	}
-	location ~ \.(md)$ {
-		if ($http_x_requested_with != XMLHttpRequest) {
-			return 403;
+	server {
+		server_name	mikroskeem.eu;
+		charset		utf-8;
+		listen		80;
+		root		/var/www/mikroskeem.eu;
+ 		location / {
+            set $req_file $uri;
+            if ($uri = "/") {
+                set $req_file /index.html;
+            }
+            try_files $req_file =404;
 		}
-		try_files $uri =404;
-	}
-}
+        location ~ /static/ {
+            expires max; 
+        }
+		location ~ /pages/(.+?)\.(md)$ {
+			if ($http_x_requested_with != "XMLHttpRequest") {
+				return 403;
+			}
+			try_files $uri =404;
+		}
+	    location ~ /pages/(.+?) {
+            try_files /index.html =404;
+        }
+    }
 ```
 
 ### Known bugs
-nginx config should be fixed
+None!
 
 ### Why did I started using jQuery, even if I promised not to?
 

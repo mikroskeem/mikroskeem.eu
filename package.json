@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "npm install && bower install && gulp",
-    "test": "node test-server.js",
+    "test": "sed -i 's/#//g' nginx.sample.conf; nginx -c $(realpath .)/nginx.sample.conf",
     "test-page": "mkdir -p dest/pages && echo '# Hello' > dest/pages/main.md"
   },
   "keywords": [
