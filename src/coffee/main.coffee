@@ -1,4 +1,4 @@
-# Google Analytics 
+# Google Analytics
 googleAnalytics = (b, c, d, e, f, g, h) ->
   b.GoogleAnalyticsObject = f
   b[f] = b[f] || ->
@@ -32,7 +32,7 @@ scrollTo = (b, c, d) ->
       scrollTo(b, c, d - 10) unless b.scrollTop is c
       return
     , 10
-  return 
+  return
 stwbtn = document.getElementById "stw"
 document.addEventListener "scroll", ->
   if document.body.scrollTop > 100
@@ -43,7 +43,7 @@ document.addEventListener "scroll", ->
 stwbtn.addEventListener "click", ->
   console.log "back to top"
   scrollTo document.body, document.body.offsetTop, 400
-  return 
+  return
 
 # Get modules
 require ['/static/js/require-cfg.min.js'], ->
@@ -64,8 +64,15 @@ require ['/static/js/require-cfg.min.js'], ->
       bg: '#848484'
     getPage = ->
       splitUrl = window.location.pathname.split "/"
-      if splitUrl.length is 3
-        loadPage splitUrl[2]
+      splitUrl.shift() # Remove (always) empty item
+      if splitUrl[0] is "index.html"
+        splitUrl.shift()
+      console.log splitUrl
+      if splitUrl.length >= 2
+        unless splitUrl[1] is ""
+          loadPage splitUrl[1]
+        else  # Shouldn't happen with sample nginx config
+          $(content).html "How did you even get here?"
       else
         loadPage "main"
       return
