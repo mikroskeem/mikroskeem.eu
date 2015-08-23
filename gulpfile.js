@@ -40,6 +40,10 @@ var files = [
     },
     {
         type: 'js',
+        file: './bower_components/dexie/dist/latest/Dexie.min.js',
+    },
+    {
+        type: 'js',
         coffeeCompile: true,
         minify: true,
         file: './src/coffee/main.coffee',

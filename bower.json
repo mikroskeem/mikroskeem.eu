@@ -29,6 +29,7 @@
     "marked": "~0.3.3",
     "requirejs": "~2.1.18",
     "nanobar": "master",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "dexie": "~1.1.0"
   }
 }
