@@ -109,7 +109,7 @@ require ['/static/js/require-cfg.min.js'], ->
         type: "HEAD"
       fetchEtag.done (res, status, xhr) ->
         cacheCallback = (event) ->
-          cacheWorker.removeEventListener cacheCallback
+          cacheWorker.removeEventListener "message", cacheCallback
           msg = event.data
           if msg.etag is xhr.getResponseHeader "etag"
             processBody msg.content
@@ -126,7 +126,7 @@ require ['/static/js/require-cfg.min.js'], ->
           data:
             name: name
         fallbackFetch = setTimeout ->
-          cacheWorker.removeEventListener cacheCallback
+          cacheWorker.removeEventListener "message", cacheCallback
           req = $.get "/pages/#{name}.md"
           req.done (res, status, xhr) ->
             processBody res
