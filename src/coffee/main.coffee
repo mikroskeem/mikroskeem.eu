@@ -18,14 +18,6 @@ googleAnalytics window, document, "script", "//www.google-analytics.com/analytic
 ga "create", "UA-53567925-1", "auto"
 ga "send", "pageview"
 
-# Check for localStorage
-
-
-# Check if RequireJS is available
-# TODO: Is there any way for that? since this script gets called after requirejs
-#  load
-#throw new Error "RequireJS is not available" if typeof require == "undefined"
-
 # Back to top button config
 scrollTo = (b, c, d) ->
   unless 0 > d
@@ -80,11 +72,11 @@ require ['/static/js/require-cfg.min.js'], ->
         loadingBar.go 40
         body = content
         unless name is "main"
-         body = content + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
+         body = "#{content}\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
         marked body, (err, renderedBody) ->
           loadingBar.go 60
           if err
-            $(contentelem).html "marked.js error: "+err
+            $(contentelem).html "marked.js error: #{err}"
             loadingBar.go 100
             return
           $(contentelem).html renderedBody
