@@ -64,6 +64,13 @@ var files = [
         finalName: 'marked-customrenderer.min.js'
     },
     {
+        type: 'js',
+        coffeeCompile: true,
+        minify: true,
+        file: './src/coffee/cache-worker.coffee',
+        finalName: 'cache-worker.min.js'
+    },
+    {
         type: 'css',
         file: 'https://bootswatch.com/darkly/bootstrap.min.css'
     },

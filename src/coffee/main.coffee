@@ -1,3 +1,6 @@
+# Start Cache worker
+cacheWorker = new Worker "/static/js/cache-worker.min.js"
+cacheWorker.postMessage "nop"
 # Google Analytics
 googleAnalytics = (b, c, d, e, f, g, h) ->
   b.GoogleAnalyticsObject = f
@@ -53,7 +56,7 @@ require ['/static/js/require-cfg.min.js'], ->
     marked.setOptions
       renderer: customRenderer
       sanitize: false
-    content = document.getElementById "content"
+    contentelem = document.getElementById "content"
     backButton = document.getElementById "backbutton"
     customRenderer = new marked.Renderer
     loadingBar = new progress
@@ -67,26 +70,24 @@ require ['/static/js/require-cfg.min.js'], ->
         unless splitUrl[1] is ""
           loadPage splitUrl[1]
         else  # Shouldn't happen with sample nginx config
-          $(content).html "How did you even get here?"
+          $(contentelem).html "How did you even get here?"
       else
         loadPage "main"
       return
     loadPage = (name) ->
       loadingBar.go 20
-      req = $.get "/pages/#{name}.md"
-      req.done (res, status, xhr) ->
+      processBody = (content) ->
         loadingBar.go 40
-        etag = xhr.getResponseHeader "ETag"
-        body = res
+        body = content
         unless name is "main"
-          body = res + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
+         body = content + "\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
         marked body, (err, renderedBody) ->
           loadingBar.go 60
           if err
-            $(content).html "marked.js error: "+err
+            $(contentelem).html "marked.js error: "+err
             loadingBar.go 100
             return
-          $(content).html renderedBody
+          $(contentelem).html renderedBody
           loadingBar.go 100
           $(".innerUrl").each (i, item) ->
             $(item).click (e) ->
@@ -103,10 +104,45 @@ require ['/static/js/require-cfg.min.js'], ->
         customScript = $(".customscript")
         (new Function(atob customScript[0].value))() if customScript.length is 1 #New scripts will start using RequireJS
         return
-      req.fail (xhr) ->
-        console.log xhr
-        $(content).html "<h1 class='heading'>#{xhr.status}</h1>"
-        loadingBar.go 100
+      fetchEtag = $.ajax
+        url: "/pages/#{name}.md"
+        type: "HEAD"
+      fetchEtag.done (res, status, xhr) ->
+        cacheCallback = (event) ->
+          cacheWorker.removeEventListener cacheCallback
+          msg = event.data
+          if msg.etag is xhr.getResponseHeader "etag"
+            processBody msg.content
+            clearTimeout fallbackFetch
+          else
+            cacheWorker.postMessage
+              type: "del"
+              data:
+                name: name
+          return
+        cacheWorker.addEventListener "message", cacheCallback, false
+        cacheWorker.postMessage
+          type: "get"
+          data:
+            name: name
+        fallbackFetch = setTimeout ->
+          cacheWorker.removeEventListener cacheCallback
+          req = $.get "/pages/#{name}.md"
+          req.done (res, status, xhr) ->
+            processBody res
+            cacheWorker.postMessage
+              type: "set"
+              data:
+                name: name
+                etag: xhr.getResponseHeader "ETag"
+                content: res
+          req.fail (xhr) ->
+            console.log xhr
+            $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
+            loadingBar.go 100
+            return
+          return
+        , 1000
         return
       return
     window.addEventListener "popstate", getPage
