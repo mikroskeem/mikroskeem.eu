@@ -7,13 +7,8 @@ define ['marked'], (marked) ->
     base = base + " id=\"#{this.options.headerPrefix + d.toLowerCase().replace(/[^\w]+/g, "-")}\">#{b}</h#{c}>\n"
     return base
   customRenderer.link = (b, c, d) ->
-    e = ""
-    if /INNER../.test(b)
-      e = '<a class="innerUrl" href="/pages/' + b.replace("INNER..", "") + '"'
-    else
-      e = '<a target="_blank" href="' + b + '"'
-    e += ' title="' + c + '"' if c
-    return e + ">" + d + "</a>"
+    c = "" unless c
+    "<a #{if /INNER../.test b then "class=\"innerUrl\" href=\"/pages/#{b.replace "INNER..", ""}\"" else "target=\"_blank\" href=\"#{b}\""} title=\"#{c}\">#{d}</a>"
   customRenderer.image = (b, c, d) ->
     c = "" unless c
     d = "" unless d
