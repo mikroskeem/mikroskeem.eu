@@ -142,7 +142,7 @@ require ['/static/js/require-cfg.min.js'], ->
           cacheWorker.removeEventListener "message", cacheCallback
           _direct_loadPage name
           return
-        , 1000
+        , 500
         return
       fetchEtag.fail (xhr) ->
         console.log xhr
