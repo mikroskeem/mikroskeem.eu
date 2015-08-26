@@ -15,5 +15,7 @@ define ['marked'], (marked) ->
     e += ' title="' + c + '"' if c
     return e + ">" + d + "</a>"
   customRenderer.image = (b, c, d) ->
+    c = "" unless c
+    d = "" unless d
     "<img class=\"img-responsive lazyload\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" data-src=\"#{b}\" alt=\"#{d}\" title=\"#{c}\" />\n"
   return customRenderer
