@@ -10,8 +10,8 @@ self.addEventListener 'message', (event) ->
     if msg is "nop"
       return
     if msg.type is "get"
-      db.cache.where("name").equals(msg.data.name).each (item)->
-        self.postMessage item
+      db.cache.where("name").equals(msg.data.name).toArray (data)->
+        self.postMessage data
         return
     else if msg.type is "set"
       db.cache.add

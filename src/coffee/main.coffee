@@ -109,7 +109,7 @@ require ['/static/js/require-cfg.min.js'], ->
           return
         return
       req.fail (xhr) ->
-        console.log xhr
+        console.error xhr
         $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
         loadingBar.go 100
         return
@@ -124,9 +124,15 @@ require ['/static/js/require-cfg.min.js'], ->
         cacheCallback = (event) ->
           cacheWorker.removeEventListener "message", cacheCallback
           msg = event.data
-          if msg.etag is xhr.getResponseHeader "etag"
+          if msg.length is 0
             clearTimeout fallbackFetch
-            processBody msg.content
+            _direct_loadPage name
+            return
+          console.warn "Bug? cache length is #{msg.length}" unless msg.length is 1
+          content = msg[0]
+          if content.etag is xhr.getResponseHeader "etag"
+            clearTimeout fallbackFetch
+            processBody content.content
           else
             cacheWorker.postMessage
               type: "del"
@@ -145,7 +151,7 @@ require ['/static/js/require-cfg.min.js'], ->
         , 500
         return
       fetchEtag.fail (xhr) ->
-        console.log xhr
+        console.error xhr
         $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
         loadingBar.go 100
         return
