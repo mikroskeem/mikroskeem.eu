@@ -53,6 +53,7 @@ require ['/static/js/require-cfg.min.js'], ->
     customRenderer = new marked.Renderer
     loadingBar = new progress
       bg: '#848484'
+
     getPage = ->
       splitUrl = window.location.pathname.split "/"
       splitUrl.shift() # Remove (always) empty item
@@ -66,36 +67,56 @@ require ['/static/js/require-cfg.min.js'], ->
       else
         loadPage "main"
       return
-    loadPage = (name) ->
-      loadingBar.go 20
-      processBody = (content) ->
-        loadingBar.go 40
-        body = content
+
+    processBody = (content) ->
+      loadingBar.go 40
+      $(contentelem).html content
+      loadingBar.go 100
+      $(".innerUrl").each (i, item) ->
+        $(item).click (e) ->
+          e.preventDefault()
+          href = e.target.getAttribute "href"
+          url = href
+          if href is "/"
+            url = "/pages/main"
+          loadPage(url.replace "/pages/", "")
+          history.pushState null, null, url
+          return
+        return
+      customScript = $(".customscript")
+      (new Function(atob customScript[0].value))() if customScript.length is 1 #New scripts will start using RequireJS
+      return
+
+    _direct_loadPage = (name) ->
+      req = $.get "/pages/#{name}.md"
+      req.done (res, status, xhr) ->
+        body = res
         unless name is "main"
-         body = "#{content}\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
+          body = "#{body}\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
         marked body, (err, renderedBody) ->
           loadingBar.go 60
           if err
             $(contentelem).html "marked.js error: #{err}"
             loadingBar.go 100
             return
-          $(contentelem).html renderedBody
-          loadingBar.go 100
-          $(".innerUrl").each (i, item) ->
-            $(item).click (e) ->
-              e.preventDefault()
-              href = e.target.getAttribute "href"
-              url = href
-              if href is "/"
-                url = "/pages/main"
-              loadPage(url.replace "/pages/", "")
-              history.pushState null, null, url
-              return
-            return
+          processBody renderedBody
+          cacheWorker.postMessage
+            type: "set"
+            data:
+              name: name
+              etag: xhr.getResponseHeader "ETag"
+              content: renderedBody
           return
-        customScript = $(".customscript")
-        (new Function(atob customScript[0].value))() if customScript.length is 1 #New scripts will start using RequireJS
         return
+      req.fail (xhr) ->
+        console.log xhr
+        $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
+        loadingBar.go 100
+        return
+      return
+
+    loadPage = (name) ->
+      loadingBar.go 20
       fetchEtag = $.ajax
         url: "/pages/#{name}.md"
         type: "HEAD"
@@ -104,8 +125,8 @@ require ['/static/js/require-cfg.min.js'], ->
           cacheWorker.removeEventListener "message", cacheCallback
           msg = event.data
           if msg.etag is xhr.getResponseHeader "etag"
-            processBody msg.content
             clearTimeout fallbackFetch
+            processBody msg.content
           else
             cacheWorker.postMessage
               type: "del"
@@ -119,22 +140,14 @@ require ['/static/js/require-cfg.min.js'], ->
             name: name
         fallbackFetch = setTimeout ->
           cacheWorker.removeEventListener "message", cacheCallback
-          req = $.get "/pages/#{name}.md"
-          req.done (res, status, xhr) ->
-            processBody res
-            cacheWorker.postMessage
-              type: "set"
-              data:
-                name: name
-                etag: xhr.getResponseHeader "ETag"
-                content: res
-          req.fail (xhr) ->
-            console.log xhr
-            $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
-            loadingBar.go 100
-            return
+          _direct_loadPage name
           return
         , 1000
+        return
+      fetchEtag.fail (xhr) ->
+        console.log xhr
+        $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
+        loadingBar.go 100
         return
       return
     window.addEventListener "popstate", getPage
