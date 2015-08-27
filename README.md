@@ -50,7 +50,7 @@ Use this config:
 ```
 
 ### Known bugs
-None!
+CI tests page building, not page itself.
 
 ### Why did I started using jQuery, even if I promised not to?
 
