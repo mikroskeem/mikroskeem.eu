@@ -8,9 +8,8 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     path = require('path');
 
-var finalDest = "./dest/"
-
-var files = [
+var finalDest = process.env.DESTINATION || "./dest/",
+    files = [
     {
         type: 'jade',
         file: './src/jade/index.jade',
