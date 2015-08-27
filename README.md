@@ -10,9 +10,7 @@ You need to have gulp and bower in path (`npm install -g gulp bower`)
 ```
 $ git clone --depth=1 git@gitlab.com:mikroskeem/mikroskeem.eu.git
 $ cd mikroskeem.eu
-$ bower install
-$ npm install
-$ mkdir dest/pages
+$ npm run build
 $ npm run test-page
 ```
 
