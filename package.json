@@ -8,9 +8,9 @@
     "url": "git+ssh://git@gitlab.com/mikroskeem/mikroskeem.eu.git"
   },
   "scripts": {
-    "ci-build": "npm install -g bower gulp && npm install && bower --allow-root install && gulp",
     "build": "npm install && bower install && gulp",
-    "test": "sed -i 's/#//g' nginx.sample.conf; nginx -c $(realpath .)/nginx.sample.conf",
+    "test": "mocha",
+    "test-server": "cp nginx.sample.conf nginx.conf && sed -i \"s#0ROOT0#$(pwd)#g\" nginx.conf && nginx -g 'pid /dev/null; master_process off; daemon off; error_log /dev/stdout debug;' -c $(realpath .)/nginx.conf",
     "test-page": "mkdir -p dest/pages && echo '# Hello' > dest/pages/main.md"
   },
   "keywords": [
@@ -22,7 +22,10 @@
   "author": "mikroskeem",
   "license": "UNLICENSED",
   "devDependencies": {
-    "coffee-script": "^1.9.3"
+    "chai": "^3.2.0",
+    "coffee-script": "^1.9.3",
+    "mocha": "^2.2.5",
+    "nightmare": "^1.8.2"
   },
   "dependencies": {
     "gulp": "^3.9.0",

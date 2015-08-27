@@ -2,10 +2,30 @@ image: node:0.12.7-wheezy
 
 stages:
   - buildpage
+  - testpage
 
 build:
   stage: buildpage
   script:
-    - npm run ci-build
+    - npm install -g bower gulp
+    - npm install
+    - bower --allow-root install
+    - gulp
+  only:
+    - master
+
+test:
+  stage: testpage
+  script:
+    - apt-get update
+    - apt-get install nginx
+    - npm run test-page
+    - cp nginx.sample.conf nginx.conf
+    - sed -i \"s#0ROOT0#$(pwd)#g\" nginx.conf
+    - nginx -g 'pid /dev/nginx.pid;' -c $(realpath .)/nginx.conf
+    - cp test/longpage.md dest/pages/longpage.md
+    - npm link mocha
+    - mocha
+    - nginx -g 'pid /tmp/nginx.pid;' -s stop
   only:
     - master
