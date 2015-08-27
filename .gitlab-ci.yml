@@ -18,7 +18,7 @@ test:
   stage: testpage
   script:
     - apt-get update
-    - apt-get install nginx
+    - apt-get install -y nginx
     - npm run test-page
     - cp nginx.sample.conf nginx.conf
     - sed -i \"s#0ROOT0#$(pwd)#g\" nginx.conf
