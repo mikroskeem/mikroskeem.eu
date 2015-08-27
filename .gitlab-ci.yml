@@ -17,6 +17,7 @@ build:
 test:
   stage: testpage
   script:
+    - echo "deb http://http.debian.net/debian wheezy-backports main" >> /etc/apt/sources.list
     - apt-get update
     - apt-get install -y nginx
     - npm run test-page
