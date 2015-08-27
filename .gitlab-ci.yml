@@ -17,6 +17,7 @@ build:
 test:
   stage: testpage
   script:
+    - export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
     - echo "deb http://http.debian.net/debian wheezy-backports main" >> /etc/apt/sources.list
     - apt-get update
     - apt-get -t wheezy-backports install -y nginx
