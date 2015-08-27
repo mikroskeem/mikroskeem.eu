@@ -8,6 +8,7 @@
     "url": "git+ssh://git@gitlab.com/mikroskeem/mikroskeem.eu.git"
   },
   "scripts": {
+    "ci-build": "npm install -g bower gulp && npm install && bower --allow-root install && gulp",
     "build": "npm install && bower install && gulp",
     "test": "sed -i 's/#//g' nginx.sample.conf; nginx -c $(realpath .)/nginx.sample.conf",
     "test-page": "mkdir -p dest/pages && echo '# Hello' > dest/pages/main.md"

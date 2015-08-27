@@ -1,0 +1,11 @@
+image: node:0.12.7-wheezy
+
+stages:
+  - buildpage
+
+build:
+  stage: buildpage
+  script:
+    - npm run ci-build
+  only:
+    - master
