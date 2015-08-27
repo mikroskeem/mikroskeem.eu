@@ -26,6 +26,7 @@ test:
     - sed -i "s#0ROOT0#$(pwd)#g" nginx.conf
     - nginx -g 'pid /dev/nginx.pid;' -c $(pwd)/nginx.conf
     - cp test/longpage.md dest/pages/longpage.md
+    - npm install
     - npm link mocha
     - /usr/local/lib/node_modules/mocha/bin/mocha
     - nginx -g 'pid /tmp/nginx.pid;' -s stop
