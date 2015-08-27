@@ -19,7 +19,7 @@ test:
   script:
     - echo "deb http://http.debian.net/debian wheezy-backports main" >> /etc/apt/sources.list
     - apt-get update
-    - apt-get -t wheezy-backports install nginx
+    - apt-get -t wheezy-backports install -y nginx
     - npm run test-page
     - cp nginx.sample.conf nginx.conf
     - sed -i "s#0ROOT0#$(pwd)#g" nginx.conf
