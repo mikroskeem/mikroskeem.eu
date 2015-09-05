@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm install && bower install && gulp",
     "test": "mocha",
-    "test-server": "cp nginx.sample.conf nginx.conf && sed -i \"s#0ROOT0#$(pwd)#g\" nginx.conf && nginx -g 'pid /dev/null; master_process off; daemon off; error_log /dev/stdout debug;' -c $(realpath .)/nginx.conf",
+    "test-server": "cp nginx.sample.conf nginx.conf && sed -i \"s#0ROOT0#$(pwd)/dest#g\" nginx.conf && nginx -g 'pid /dev/null; master_process off; daemon off; error_log /dev/stdout debug;' -c $(realpath .)/nginx.conf",
     "test-page": "mkdir -p dest/pages && echo '# Hello' > dest/pages/main.md"
   },
   "keywords": [
