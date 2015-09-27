@@ -43,8 +43,9 @@ require ['/static/js/require-cfg.min.js'], ->
     'marked_customrenderer'
     'lazysizes'
     'nanobar'
+    'hammer'
     'jquery'
-  ], (marked, customRenderer, lazysizes, progress, $) ->
+  ], (marked, customRenderer, lazysizes, progress, Hammer, $) ->
     marked.setOptions
       renderer: customRenderer
       sanitize: false
@@ -54,18 +55,25 @@ require ['/static/js/require-cfg.min.js'], ->
     loadingBar = new progress
       bg: '#848484'
 
-    getPage = ->
+    getCurrentPageName = ->
       splitUrl = window.location.pathname.split "/"
       splitUrl.shift() # Remove (always) empty item
       if splitUrl[0] is "index.html"
         splitUrl.shift()
       if splitUrl.length >= 2
         unless splitUrl[1] is ""
-          loadPage splitUrl[1]
+          return splitUrl[1]
         else  # Shouldn't happen with sample nginx config
-          $(contentelem).html "How did you even get here?"
+          return ""
       else
-        loadPage "main"
+        return "main"
+
+    getPage = ->
+      page = getCurrentPageName()
+      unless page is ""
+        loadPage page
+      else
+        $(contentelem).html "How did you even get here?"
       return
 
     processBody = (content) ->
@@ -155,6 +163,14 @@ require ['/static/js/require-cfg.min.js'], ->
         $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
         loadingBar.go 100
         return
+      return
+    mc = new Hammer document.body
+    mc.on "swipeleft", (ev) ->
+      history.forward()
+      return
+    mc.on "swiperight", (ev) ->
+      unless getCurrentPageName() is "main"
+        history.back()
       return
     window.addEventListener "popstate", getPage
     getPage()
