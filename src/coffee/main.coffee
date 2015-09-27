@@ -100,7 +100,7 @@ require ['/static/js/require-cfg.min.js'], ->
       req.done (res, status, xhr) ->
         body = res
         unless name is "main"
-          body = "#{body}\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a>"
+          body = "#{body}\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a> (or swipe)"
         marked body, (err, renderedBody) ->
           loadingBar.go 60
           if err
