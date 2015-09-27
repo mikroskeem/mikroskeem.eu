@@ -83,7 +83,7 @@ require ['/static/js/require-cfg.min.js'], ->
       $(".innerUrl").each (i, item) ->
         $(item).click (e) ->
           e.preventDefault()
-          href = e.target.getAttribute "href"
+          href = e.target.pathname
           url = href
           if href is "/"
             url = "/pages/main"
