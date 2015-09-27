@@ -30,6 +30,7 @@
     "requirejs": "~2.1.18",
     "nanobar": "master",
     "jquery": "~2.1.4",
-    "dexie": "~1.1.0"
+    "dexie": "~1.1.0",
+    "hammerjs": "~2.0.4"
   }
 }

@@ -43,6 +43,10 @@ var finalDest = process.env.DESTINATION || "./dest/",
     },
     {
         type: 'js',
+        file: './bower_components/hammerjs/hammer.min.js',
+    },
+    {
+        type: 'js',
         coffeeCompile: true,
         minify: true,
         file: './src/coffee/main.coffee',

@@ -6,3 +6,4 @@ requirejs.config
     lazysizes: 'lazysizes.min'
     nanobar: 'nanobar.min'
     jquery: 'jquery.min'
+    hammer: 'hammer.min'
