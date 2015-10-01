@@ -47,6 +47,10 @@ var finalDest = process.env.DESTINATION || "./dest/",
     },
     {
         type: 'js',
+        file: './bower_components/webcomponentsjs/HTMLImports.min.js'
+    },
+    {
+        type: 'js',
         coffeeCompile: true,
         minify: true,
         file: './src/coffee/main.coffee',
