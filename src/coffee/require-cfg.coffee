@@ -7,3 +7,4 @@ requirejs.config
     nanobar: 'nanobar.min'
     jquery: 'jquery.min'
     hammer: 'hammer.min'
+    htmlimports: 'HTMLImports.min'

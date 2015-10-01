@@ -45,6 +45,7 @@ require ['/static/js/require-cfg.min.js'], ->
     'nanobar'
     'hammer'
     'jquery'
+    'htmlimports'
   ], (marked, customRenderer, lazysizes, progress, Hammer, $) ->
     marked.setOptions
       renderer: customRenderer
@@ -95,7 +96,7 @@ require ['/static/js/require-cfg.min.js'], ->
       (new Function(atob customScript[0].value))() if customScript.length is 1 #New scripts will start using RequireJS
       return
 
-    _direct_loadPage = (name) ->
+    _md_loadPage = (name) ->
       req = $.get "/pages/#{name}.md"
       req.done (res, status, xhr) ->
         body = res
@@ -123,6 +124,38 @@ require ['/static/js/require-cfg.min.js'], ->
         return
       return
 
+
+    _html_loadPage = (name) ->
+      imp = document.querySelector "link[data-page-name=\"#{name}\"]"
+      if ! !imp and typeof imp is 'object'
+        processBody imp.import.querySelector(".importContent").cloneNode(true).innerHTML
+      else
+        ((name) ->
+          new Promise (resolve, reject) ->
+            link = document.createElement "link"
+            link.rel = "import"
+            link.dataset.pageName = name
+            link.href = "/pages/#{name}.html"
+            link.addEventListener "load", (event) ->
+                impContent = document.querySelector "link[data-page-name=\"#{name}\"]"
+                if ! !impContent and typeof impContent is 'object'
+                  resolve impContent.import.querySelector(".importContent").cloneNode(true).innerHTML
+                else
+                  reject event
+            , false
+            link.addEventListener "error", (event) ->
+                reject event
+            , false
+            document.head.appendChild link
+            return
+        )(name).then ((body)->
+          processBody body
+          return
+        ), (errEv) ->
+          console.error errEv
+          return
+      return
+
     loadPage = (name) ->
       loadingBar.go 20
       fetchEtag = $.ajax
@@ -134,7 +167,7 @@ require ['/static/js/require-cfg.min.js'], ->
           msg = event.data
           if msg.length is 0
             clearTimeout fallbackFetch
-            _direct_loadPage name
+            _md_loadPage name
             return
           console.warn "Bug? cache length is #{msg.length}" unless msg.length is 1
           content = msg[0]
@@ -154,7 +187,7 @@ require ['/static/js/require-cfg.min.js'], ->
             name: name
         fallbackFetch = setTimeout ->
           cacheWorker.removeEventListener "message", cacheCallback
-          _direct_loadPage name
+          _md_loadPage name
           return
         , 500
         return
