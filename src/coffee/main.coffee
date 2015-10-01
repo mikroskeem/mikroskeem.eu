@@ -144,6 +144,8 @@ require ['/static/js/require-cfg.min.js'], ->
                   reject event
             , false
             link.addEventListener "error", (event) ->
+                impContent = document.querySelector "link[data-page-name=\"#{name}\"]"
+                impContent.parentNode.removeChild impContent
                 reject event
             , false
             document.head.appendChild link
@@ -152,11 +154,14 @@ require ['/static/js/require-cfg.min.js'], ->
           processBody body
           return
         ), (errEv) ->
-          console.error errEv
+          console.warn "Getting old Markdown-format page"
+          _old_loadPage name
           return
       return
 
-    loadPage = (name) ->
+    loadPage = _html_loadPage
+
+    _old_loadPage = (name) ->
       loadingBar.go 20
       fetchEtag = $.ajax
         url: "/pages/#{name}.md"
