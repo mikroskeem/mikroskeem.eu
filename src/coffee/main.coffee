@@ -125,81 +125,103 @@ require ['/static/js/require-cfg.min.js'], ->
       return
 
 
-    _html_loadPage = (name) ->
-      imp = document.querySelector "link[data-page-name=\"#{name}\"]"
-      if ! !imp and typeof imp is 'object'
-        processBody imp.import.querySelector(".importContent").cloneNode(true).innerHTML
-      else
-        ((name) ->
-          new Promise (resolve, reject) ->
-            link = document.createElement "link"
-            link.rel = "import"
-            link.dataset.pageName = name
-            link.href = "/pages/#{name}.html"
-            link.addEventListener "load", (event) ->
+    fetchEtag = (name, type) ->
+      new Promise (resolve, reject) ->
+        request = $.ajax
+          url: "/pages/#{name}.#{type}"
+          type: "HEAD"
+        request.done (res, status, xhr) ->
+          resolve
+            res: res
+            status: status
+            xhr: xhr
+          return
+        request.fail (xhr) ->
+          reject
+            xhr: xhr
+          return
+        return
+
+    loadPage = (name) ->
+      loadingBar.go 20
+      fetchEtag(name, "html").then ((xhrstatus) ->
+        imp = document.querySelector "link[data-page-name=\"#{name}\"]"
+        backText = "\n<hr><a href=\"javascript:history.back()\">Go back</a> (or swipe)"
+        if ! !imp and typeof imp is 'object'
+          body = imp.import.querySelector(".importContent").cloneNode(true).innerHTML
+          unless name is "main"
+            processBody body + backText
+          else
+            processBody body
+        else
+          ((name) ->
+            new Promise (resolve, reject) ->
+              link = document.createElement "link"
+              link.rel = "import"
+              link.dataset.pageName = name
+              link.href = "/pages/#{name}.html"
+              link.addEventListener "load", (event) ->
                 impContent = document.querySelector "link[data-page-name=\"#{name}\"]"
                 if ! !impContent and typeof impContent is 'object'
                   resolve impContent.import.querySelector(".importContent").cloneNode(true).innerHTML
                 else
                   reject event
-            , false
-            link.addEventListener "error", (event) ->
+              , false
+              link.addEventListener "error", (event) ->
                 impContent = document.querySelector "link[data-page-name=\"#{name}\"]"
                 impContent.parentNode.removeChild impContent
                 reject event
-            , false
-            document.head.appendChild link
+              , false
+              document.head.appendChild link
+              return
+          )(name).then ((body)->
+            newBody = body
+            unless name is "main"
+              processBody body+backText
+            else
+              processBody body
             return
-        )(name).then ((body)->
-          processBody body
-          return
-        ), (errEv) ->
-          console.warn "Getting old Markdown-format page"
-          _old_loadPage name
-          return
-      return
-
-    loadPage = _html_loadPage
-
-    _old_loadPage = (name) ->
-      loadingBar.go 20
-      fetchEtag = $.ajax
-        url: "/pages/#{name}.md"
-        type: "HEAD"
-      fetchEtag.done (res, status, xhr) ->
-        cacheCallback = (event) ->
-          cacheWorker.removeEventListener "message", cacheCallback
-          msg = event.data
-          if msg.length is 0
-            clearTimeout fallbackFetch
+          ), (errEv) ->
+            console.error errEv
+            return
+        return
+      ), (xhr) ->
+        console.log "Getting Markdown version of the page"
+        fetchEtag(name, "md").then ((xhrstatus) ->
+          cacheCallback = (event) ->
+            cacheWorker.removeEventListener "message", cacheCallback
+            msg = event.data
+            if msg.length is 0
+              clearTimeout fallbackFetch
+              _md_loadPage name
+              return
+            console.warn "Bug? cache length is #{msg.length}" unless msg.length is 1
+            content = msg[0]
+            if content.etag is xhrstatus.xhr.getResponseHeader "etag"
+              clearTimeout fallbackFetch
+              processBody content.content
+            else
+              cacheWorker.postMessage
+                type: "del"
+                data:
+                  name: name
+            return
+          cacheWorker.addEventListener "message", cacheCallback, false
+          cacheWorker.postMessage
+            type: "get"
+            data:
+              name: name
+          fallbackFetch = setTimeout ->
+            cacheWorker.removeEventListener "message", cacheCallback
             _md_loadPage name
             return
-          console.warn "Bug? cache length is #{msg.length}" unless msg.length is 1
-          content = msg[0]
-          if content.etag is xhr.getResponseHeader "etag"
-            clearTimeout fallbackFetch
-            processBody content.content
-          else
-            cacheWorker.postMessage
-              type: "del"
-              data:
-                name: name
+          , 500
           return
-        cacheWorker.addEventListener "message", cacheCallback, false
-        cacheWorker.postMessage
-          type: "get"
-          data:
-            name: name
-        fallbackFetch = setTimeout ->
-          cacheWorker.removeEventListener "message", cacheCallback
-          _md_loadPage name
+        ), (xhr) ->
+          console.error xhr
+          $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
+          loadingBar.go 100
           return
-        , 500
-        return
-      fetchEtag.fail (xhr) ->
-        console.error xhr
-        $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
-        loadingBar.go 100
         return
       return
     mc = new Hammer document.body
