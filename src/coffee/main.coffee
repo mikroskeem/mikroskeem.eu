@@ -38,36 +38,49 @@ stwbtn.addEventListener "click", ->
 
 # Get modules
 require ['/static/js/require-cfg.min.js'], ->
+  contentelem = document.getElementById "content"
+  backButton = document.getElementById "backbutton"
+  getCurrentPageName = ->
+    splitUrl = window.location.pathname.split "/"
+    splitUrl.shift() # Remove (always) empty item
+    if splitUrl[0] is "index.html"
+      splitUrl.shift()
+    if splitUrl.length >= 2
+      unless splitUrl[1] is ""
+        return splitUrl[1]
+      else  # Shouldn't happen with sample nginx config
+        return ""
+    else
+      return "main"
+
+  require [
+    'lazysizes'
+    'hammer'
+    'htmlimports'
+  ], (lazysizes, Hammer, himports) ->
+    mc = new Hammer document.body
+    mc.on "swipeleft", (ev) ->
+      history.forward()
+      return
+    mc.on "swiperight", (ev) ->
+      unless getCurrentPageName() is "main"
+        history.back()
+      return
+    return
+
   require [
     'marked'
     'marked_customrenderer'
-    'lazysizes'
     'nanobar'
-    'hammer'
     'jquery'
-    'htmlimports'
-  ], (marked, customRenderer, lazysizes, progress, Hammer, $) ->
+  ], (marked, customRenderer, progress, $) ->
     marked.setOptions
       renderer: customRenderer
       sanitize: false
-    contentelem = document.getElementById "content"
-    backButton = document.getElementById "backbutton"
+
     customRenderer = new marked.Renderer
     loadingBar = new progress
       bg: '#848484'
-
-    getCurrentPageName = ->
-      splitUrl = window.location.pathname.split "/"
-      splitUrl.shift() # Remove (always) empty item
-      if splitUrl[0] is "index.html"
-        splitUrl.shift()
-      if splitUrl.length >= 2
-        unless splitUrl[1] is ""
-          return splitUrl[1]
-        else  # Shouldn't happen with sample nginx config
-          return ""
-      else
-        return "main"
 
     getPage = ->
       page = getCurrentPageName()
@@ -123,7 +136,6 @@ require ['/static/js/require-cfg.min.js'], ->
         loadingBar.go 100
         return
       return
-
 
     fetchEtag = (name, type) ->
       new Promise (resolve, reject) ->
@@ -223,14 +235,6 @@ require ['/static/js/require-cfg.min.js'], ->
           loadingBar.go 100
           return
         return
-      return
-    mc = new Hammer document.body
-    mc.on "swipeleft", (ev) ->
-      history.forward()
-      return
-    mc.on "swiperight", (ev) ->
-      unless getCurrentPageName() is "main"
-        history.back()
       return
     window.addEventListener "popstate", getPage
     getPage()
