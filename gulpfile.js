@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
     download = require('gulp-download'),
-    cssMin = require('gulp-minify-css'),
+    cssMin = require('gulp-cssnano'),
     uglify = require('gulp-uglify'),
     jade = require('gulp-jade'),
     nop = require('gulp-nop'),
