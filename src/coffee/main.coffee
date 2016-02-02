@@ -105,8 +105,8 @@ require ['/static/js/require-cfg.min.js'], ->
           history.pushState null, null, url
           return
         return
-      return
       loadingBar.go 100
+      return
 
     _md_loadPage = (name) ->
       req = $.get "/pages/#{name}.md"
