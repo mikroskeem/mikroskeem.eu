@@ -93,7 +93,7 @@ require ['/static/js/require-cfg.min.js'], ->
     processBody = (content) ->
       loadingBar.go 40
       $(contentelem).html content
-      loadingBar.go 100
+      loadingBar.go 60
       $(".innerUrl").each (i, item) ->
         $(item).click (e) ->
           e.preventDefault()
@@ -105,9 +105,8 @@ require ['/static/js/require-cfg.min.js'], ->
           history.pushState null, null, url
           return
         return
-      customScript = $(".customscript")
-      (new Function(atob customScript[0].value))() if customScript.length is 1 #New scripts will start using RequireJS
       return
+      loadingBar.go 100
 
     _md_loadPage = (name) ->
       req = $.get "/pages/#{name}.md"
@@ -198,7 +197,6 @@ require ['/static/js/require-cfg.min.js'], ->
             return
         return
       ), (xhr) ->
-        console.log "Getting Markdown version of the page"
         fetchEtag(name, "md").then ((xhrstatus) ->
           cacheCallback = (event) ->
             cacheWorker.removeEventListener "message", cacheCallback
