@@ -63,6 +63,11 @@ var finalDest = process.env.DESTINATION || "./dest/",
         type: 'js',
         file: './bower_components/webcomponentsjs/HTMLImports.min.js'
     },
+        /* Emoji library */
+    {
+        type: 'js',
+        file: './bower_components/emojione/lib/js/emojione.min.js'
+    },
         /* -- Own code */
 
         /* Main page logic */
@@ -103,6 +108,11 @@ var finalDest = process.env.DESTINATION || "./dest/",
     {
         type: 'css',
         file: 'https://bootswatch.com/darkly/bootstrap.min.css'
+    },
+        /* EmojiOne library CSS */
+    {
+        type: 'css',
+        file: './bower_components/emojione/assets/css/emojione.min.css'
     },
         /* Custom CSS */
     {
