@@ -1,6 +1,6 @@
 {
   "name": "mikroskeem.eu",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "my personal homepage",
   "main": "server.js",
   "repository": {
