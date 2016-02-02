@@ -1,6 +1,7 @@
 # Start Cache worker
 cacheWorker = new Worker "/static/js/cache-worker.min.js"
 cacheWorker.postMessage "nop"
+
 # Google Analytics
 googleAnalytics = (b, c, d, e, f, g, h) ->
   b.GoogleAnalyticsObject = f
@@ -28,18 +29,14 @@ scrollTo = (b, c, d) ->
       return
     , 10
   return
-stwbtn = document.getElementById "stw"
-document.addEventListener "scroll", ->
-  stwbtn.className = if document.body.scrollTop > 100 then "show" else ""
-  return
-stwbtn.addEventListener "click", ->
-  scrollTo document.body, document.body.offsetTop, 400
-  return
 
 # Get modules
 require ['/static/js/require-cfg.min.js'], ->
+  stwbtn = document.getElementById "stw"
   contentelem = document.getElementById "content"
   backButton = document.getElementById "backbutton"
+
+  # Gets current page name ('/pages/<name>')
   getCurrentPageName = ->
     splitUrl = window.location.pathname.split "/"
     splitUrl.shift() # Remove (always) empty item
@@ -53,6 +50,15 @@ require ['/static/js/require-cfg.min.js'], ->
     else
       return "main"
 
+  # Set up 'back to top' button
+  document.addEventListener "scroll", ->
+    stwbtn.className = if document.body.scrollTop > 100 then "show" else ""
+    return
+  stwbtn.addEventListener "click", ->
+    scrollTo document.body, document.body.offsetTop, 400
+    return
+
+  # Load image lazyloader, touch gesture support and HTML5 import polyfill libraries
   require [
     'lazysizes'
     'hammer'
@@ -68,6 +74,7 @@ require ['/static/js/require-cfg.min.js'], ->
       return
     return
 
+  # Load require code and libraries for proper page workflow
   require [
     'marked'
     'marked_customrenderer'
@@ -229,7 +236,7 @@ require ['/static/js/require-cfg.min.js'], ->
           return
         ), (xhr) ->
           console.error xhr
-          $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
+          $(contentelem).html "<h1 class='heading'>#{xhr.xhr.status}</h1>"
           loadingBar.go 100
           return
         return
