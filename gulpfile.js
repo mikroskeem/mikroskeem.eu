@@ -10,45 +10,62 @@ var gulp = require('gulp'),
 
 var finalDest = process.env.DESTINATION || "./dest/",
     files = [
+        /* --- HTML */
+
+        /* Main page */
     {
         type: 'jade',
         file: './src/jade/index.jade',
         finalName: 'index.html'
     },
+        /* --- JavaScript */
+        /* -- Libraries */
+
+        /* Loading bar */
     {
         type: 'js', 
         file: './bower_components/nanobar/nanobar.min.js'
     },
+        /* Image lazyloader */
     {
         type: 'js',
         file: './bower_components/lazysizes/lazysizes.min.js'
     },
+        /* Markdown parser */
     {
         type: 'js',
         file: './bower_components/marked/marked.min.js'
     },
+        /* JavaScript lazyloader */
     {
         type: 'js',
         minify: true,
         file: './bower_components/requirejs/require.js',
         finalName: 'require.min.js'
     },
+        /* jQuery */
     {
         type: 'js',
         file: './bower_components/jquery/dist/jquery.min.js'
     },
+        /* IndexedDB wrapper */
     {
         type: 'js',
         file: './bower_components/dexie/dist/latest/Dexie.min.js',
     },
+        /* Touch gesture support */
     {
         type: 'js',
         file: './bower_components/hammerjs/hammer.min.js',
     },
+        /* HTML5 imports polyfill */
     {
         type: 'js',
         file: './bower_components/webcomponentsjs/HTMLImports.min.js'
     },
+        /* -- Own code */
+
+        /* Main page logic */
     {
         type: 'js',
         coffeeCompile: true,
@@ -56,6 +73,7 @@ var finalDest = process.env.DESTINATION || "./dest/",
         file: './src/coffee/main.coffee',
         finalName: 'main.min.js'
     },
+        /* RequireJS configuration */
     {
         type: 'js',
         coffeeCompile: true,
@@ -63,6 +81,7 @@ var finalDest = process.env.DESTINATION || "./dest/",
         file: './src/coffee/require-cfg.coffee',
         finalName: 'require-cfg.min.js'
     },
+        /* Custom markdown renderer */
     {
         type: 'js',
         coffeeCompile: true,
@@ -70,6 +89,7 @@ var finalDest = process.env.DESTINATION || "./dest/",
         file: './src/coffee/marked-customrenderer.coffee',
         finalName: 'marked-customrenderer.min.js'
     },
+        /* Page content cacher */
     {
         type: 'js',
         coffeeCompile: true,
@@ -77,16 +97,21 @@ var finalDest = process.env.DESTINATION || "./dest/",
         file: './src/coffee/cache-worker.coffee',
         finalName: 'cache-worker.min.js'
     },
+        /* --- Looks */
+
+        /* Base CSS */
     {
         type: 'css',
         file: 'https://bootswatch.com/darkly/bootstrap.min.css'
     },
+        /* Custom CSS */
     {
         type: 'css',
         minify: true,
         file: './src/css/index.css',
         finalName: 'index.min.css'
     },
+        /* 'Back to top' button */
     {
         type: 'img',
         file: 'https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/white/svg/arrow-circle-up.svg'
