@@ -1,4 +1,4 @@
-define ['marked'], (marked) ->
+define ['marked', 'emojione'], (marked, emojione) ->
   customRenderer = new marked.Renderer
   customRenderer.heading = (b, c, d) ->
     base = "<h#{c}"
@@ -13,4 +13,5 @@ define ['marked'], (marked) ->
     c = "" unless c
     d = "" unless d
     "<img class=\"img-responsive lazyload\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" data-src=\"#{b}\" alt=\"#{d}\" title=\"#{c}\" />\n"
+  customRenderer.text = (b) -> emojione.toImage b
   return customRenderer
