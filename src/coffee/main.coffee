@@ -94,15 +94,17 @@ require ['/static/js/require-cfg.min.js'], ->
       unless page is ""
         loadPage page
       else
-        $(contentelem).html "How did you even get here?"
+        contentelem.innerHTML = "How did you even get here?"
       return
 
     processBody = (content) ->
       loadingBar.go 40
-      $(contentelem).html content
+      contentelem.innerHTML = content
       loadingBar.go 60
-      $(".innerUrl").each (i, item) ->
-        $(item).click (e) ->
+      # http://html5demos.com/history
+      innerUrls = document.getElementsByClassName "innerUrl"
+      [].forEach.call innerUrls, (item) ->
+        item.addEventListener 'click', (e) ->
           e.preventDefault()
           href = e.target.pathname
           url = href
@@ -111,7 +113,7 @@ require ['/static/js/require-cfg.min.js'], ->
           loadPage(url.replace "/pages/", "")
           history.pushState null, null, url
           return
-        return
+        , false
       loadingBar.go 100
       return
 
@@ -124,7 +126,7 @@ require ['/static/js/require-cfg.min.js'], ->
         marked body, (err, renderedBody) ->
           loadingBar.go 60
           if err
-            $(contentelem).html "marked.js error: #{err}"
+            contentelem.innerHTML = "marked.js error: #{err}"
             loadingBar.go 100
             return
           processBody renderedBody
@@ -138,7 +140,7 @@ require ['/static/js/require-cfg.min.js'], ->
         return
       req.fail (xhr) ->
         console.error xhr
-        $(contentelem).html "<h1 class='heading'>#{xhr.status}</h1>"
+        contentelem.innerHTML = "<h1 class='heading'>#{xhr.status}</h1>"
         loadingBar.go 100
         return
       return
@@ -236,7 +238,7 @@ require ['/static/js/require-cfg.min.js'], ->
           return
         ), (xhr) ->
           console.error xhr
-          $(contentelem).html "<h1 class='heading'>#{xhr.xhr.status}</h1>"
+          contentelem.innerHTML = "<h1 class='heading'>#{xhr.xhr.status}</h1>"
           loadingBar.go 100
           return
         return
