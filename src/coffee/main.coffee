@@ -32,6 +32,7 @@ scrollTo = (b, c, d) ->
 
 # Get modules
 require ['/static/js/require-cfg.min.js'], ->
+  httpreq = new XMLHttpRequest
   stwbtn = document.getElementById "stw"
   contentelem = document.getElementById "content"
   backButton = document.getElementById "backbutton"
@@ -118,53 +119,56 @@ require ['/static/js/require-cfg.min.js'], ->
       return
 
     _md_loadPage = (name) ->
-      req = $.get "/pages/#{name}.md"
-      req.done (res, status, xhr) ->
-        body = res
-        unless name is "main"
-          body = "#{body}\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a> (or swipe)"
-        marked body, (err, renderedBody) ->
-          loadingBar.go 60
-          if err
-            contentelem.innerHTML = "marked.js error: #{err}"
-            loadingBar.go 100
-            return
-          processBody renderedBody
-          cacheWorker.postMessage
-            type: "set"
-            data:
-              name: name
-              etag: xhr.getResponseHeader "ETag"
-              content: renderedBody
+      handler = ->
+        unless httpreq.readyState is 4
           return
+        if httpreq.status is 200
+          body = httpreq.responseText
+          unless name is "main"
+            body = "#{body}\n\n* * *\n\n<a href=\"javascript:history.back()\">Go back</a> (or swipe)"
+          marked body, (err, renderedBody) ->
+            loadingBar.go 60
+            if err
+              contentelem.innerHTML = "marked.js error: #{err}"
+              loadingBar.go 100
+              return
+            processBody renderedBody
+            cacheWorker.postMessage
+              type: "set"
+              data:
+                name: name
+                etag: httpreq.getResponseHeader "ETag"
+                content: renderedBody
+            return
+        else
+          console.error httpreq
+          contentelem.innerHTML = "<h1 class='heading'>#{httpreq.status}</h1>"
+          loadingBar.go 100
+        httpreq.removeEventListener 'readystatechange', handler
         return
-      req.fail (xhr) ->
-        console.error xhr
-        contentelem.innerHTML = "<h1 class='heading'>#{xhr.status}</h1>"
-        loadingBar.go 100
-        return
-      return
+
+      httpreq.open 'GET', "/pages/#{name}.md", true
+      httpreq.addEventListener 'readystatechange', handler
+      httpreq.send null
 
     fetchEtag = (name, type) ->
       new Promise (resolve, reject) ->
-        request = $.ajax
-          url: "/pages/#{name}.#{type}"
-          type: "HEAD"
-        request.done (res, status, xhr) ->
-          resolve
-            res: res
-            status: status
-            xhr: xhr
+        handler = ->
+          unless httpreq.readyState is 4
+            return
+          if httpreq.status is 200
+            resolve httpreq.getResponseHeader 'ETag'
+          else
+            reject httpreq
+          httpreq.removeEventListener 'readystatechange', handler
           return
-        request.fail (xhr) ->
-          reject
-            xhr: xhr
-          return
-        return
+        httpreq.open 'HEAD', "/pages/#{name}.#{type}", true
+        httpreq.addEventListener 'readystatechange', handler
+        httpreq.send null
 
     loadPage = (name) ->
       loadingBar.go 20
-      fetchEtag(name, "html").then ((xhrstatus) ->
+      fetchEtag(name, "html").then ((etag) ->
         imp = document.querySelector "link[data-page-name=\"#{name}\"]"
         backText = "\n<hr><a href=\"javascript:history.back()\">Go back</a> (or swipe)"
         if ! !imp and typeof imp is 'object'
@@ -206,7 +210,7 @@ require ['/static/js/require-cfg.min.js'], ->
             return
         return
       ), (xhr) ->
-        fetchEtag(name, "md").then ((xhrstatus) ->
+        fetchEtag(name, "md").then ((etag) ->
           cacheCallback = (event) ->
             cacheWorker.removeEventListener "message", cacheCallback
             msg = event.data
@@ -216,7 +220,7 @@ require ['/static/js/require-cfg.min.js'], ->
               return
             console.warn "Bug? cache length is #{msg.length}" unless msg.length is 1
             content = msg[0]
-            if content.etag is xhrstatus.xhr.getResponseHeader "etag"
+            if content.etag is etag
               clearTimeout fallbackFetch
               processBody content.content
             else
