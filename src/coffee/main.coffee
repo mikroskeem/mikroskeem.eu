@@ -186,9 +186,14 @@ require ['/static/js/require-cfg.min.js'], ->
           )(name).then ((body)->
             newBody = body
             unless name is "main"
-              processBody body+backText
-            else
-              processBody body
+              newBody = newBody+backText
+            processBody newBody
+            cacheWorker.postMessage
+              type: "set"
+              data:
+                name: name
+                etag: etag
+                content: newBody
             return
           ), (errEv) ->
             console.error errEv
