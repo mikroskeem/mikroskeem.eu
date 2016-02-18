@@ -81,6 +81,13 @@ var finalDest = process.env.DESTINATION || "./dest/",
         file: './src/coffee/require-cfg.coffee',
         finalName: 'require-cfg.min.js'
     },
+    {
+        type: 'js',
+        coffeeCompile: true,
+        minify: true,
+        file: './src/coffee/ga.coffee',
+        finalName: 'ga.min.js'
+    },
         /* Custom markdown renderer */
     {
         type: 'js',

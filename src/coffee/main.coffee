@@ -2,23 +2,6 @@
 cacheWorker = new Worker "/static/js/cache-worker.min.js"
 cacheWorker.postMessage "nop"
 
-# Google Analytics
-googleAnalytics = (b, c, d, e, f, g, h) ->
-  b.GoogleAnalyticsObject = f
-  b[f] = b[f] || ->
-    (b[f].q = b[f].q or []).push arguments
-    return
-  b[f].l = 1 * new Date
-  g = c.createElement d
-  h = c.getElementsByTagName(d)[0]
-  g.async = 1
-  g.src = e
-  h.parentNode.insertBefore g, h
-  return
-googleAnalytics window, document, "script", "//www.google-analytics.com/analytics.js", "ga"
-ga "create", "UA-53567925-1", "auto"
-ga "send", "pageview"
-
 # Back to top button config
 scrollTo = (b, c, d) ->
   unless 0 > d
@@ -251,5 +234,12 @@ require ['/static/js/require-cfg.min.js'], ->
       return
     window.addEventListener "popstate", getPage
     getPage()
+    return
+  # Load Google Analytics
+  require ['ga'], ->
+    # Loaded
+    return
+  , (err) ->
+    console.log 'GA failed to load. Dang you young adblock users!'
     return
   return

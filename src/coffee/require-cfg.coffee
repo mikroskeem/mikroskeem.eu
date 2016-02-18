@@ -4,6 +4,8 @@ requirejs.config
     'emojione':
       exports: 'emojione'
   paths:
+    _ga: '//www.google-analytics.com/analytics'
+    ga: 'ga.min'
     marked: 'marked.min'
     marked_customrenderer: 'marked-customrenderer.min'
     lazysizes: 'lazysizes.min'
