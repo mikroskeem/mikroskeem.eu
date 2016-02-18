@@ -64,7 +64,10 @@ require ['/static/js/require-cfg.min.js'], ->
     'hammer'
     'htmlimports'
   ], (lazysizes, Hammer, himports) ->
-    mc = new Hammer document.body
+    mc = new Hammer document.body,
+      cssProps:
+        userSelect: true
+        userDrag: true
     mc.on "swipeleft", (ev) ->
       history.forward()
       return
