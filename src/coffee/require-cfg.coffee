@@ -8,7 +8,6 @@ requirejs.config
     marked_customrenderer: 'marked-customrenderer.min'
     lazysizes: 'lazysizes.min'
     nanobar: 'nanobar.min'
-    jquery: 'jquery.min'
     hammer: 'hammer.min'
     htmlimports: 'HTMLImports.min'
     emojione: 'emojione.min'

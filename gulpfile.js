@@ -43,11 +43,6 @@ var finalDest = process.env.DESTINATION || "./dest/",
         file: './bower_components/requirejs/require.js',
         finalName: 'require.min.js'
     },
-        /* jQuery */
-    {
-        type: 'js',
-        file: './bower_components/jquery/dist/jquery.min.js'
-    },
         /* IndexedDB wrapper */
     {
         type: 'js',
