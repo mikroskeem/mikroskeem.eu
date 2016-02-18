@@ -80,8 +80,7 @@ require ['/static/js/require-cfg.min.js'], ->
     'marked'
     'marked_customrenderer'
     'nanobar'
-    'jquery'
-  ], (marked, customRenderer, progress, $) ->
+  ], (marked, customRenderer, progress) ->
     marked.setOptions
       renderer: customRenderer
       sanitize: false
