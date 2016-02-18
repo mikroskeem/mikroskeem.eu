@@ -53,11 +53,6 @@ var finalDest = process.env.DESTINATION || "./dest/",
         type: 'js',
         file: './bower_components/hammerjs/hammer.min.js',
     },
-        /* HTML5 imports polyfill */
-    {
-        type: 'js',
-        file: './bower_components/webcomponentsjs/HTMLImports.min.js'
-    },
         /* Emoji library */
     {
         type: 'js',

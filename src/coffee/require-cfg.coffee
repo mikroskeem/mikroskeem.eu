@@ -11,5 +11,4 @@ requirejs.config
     lazysizes: 'lazysizes.min'
     nanobar: 'nanobar.min'
     hammer: 'hammer.min'
-    htmlimports: 'HTMLImports.min'
     emojione: 'emojione.min'

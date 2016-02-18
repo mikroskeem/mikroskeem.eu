@@ -31,7 +31,6 @@
     "nanobar": "master",
     "dexie": "~1.1.0",
     "hammerjs": "~2.0.4",
-    "webcomponentsjs": "~0.7.14",
     "emojione": "^2.1.0"
   }
 }
