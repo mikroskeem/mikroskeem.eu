@@ -47,9 +47,4 @@ Use this config:
 ```
 
 ### Known bugs
-- CI tests page building, not page itself.
-- Sometimes page gets stuck for 2-3 secs while changing page
-
-### Why HTML Imports?
-Honestly Markdown isn't that great. You can't use custom stuff like editors and such.  
-So it'd better to support both Markdown and HTML imo (I don't want to rewrite my pages by hand)
+- None at the moment!
