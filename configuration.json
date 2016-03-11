@@ -1,0 +1,5 @@
+{
+	"pageTitle": "mikroskeem's place",
+	"headTags": "    meta(name='keywords', content='mikroskeem, Mark Vainomaa')\n    meta(name='description', content=\"mikroskeem's personal page.\")\n    meta(name='author', content='Mark Vainomaa')\n    link(type='text/plain', rel='author', href='/humans.txt')",
+        "bootstrapTheme": "darkly"
+}

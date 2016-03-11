@@ -1,14 +1,17 @@
 var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
+    mustache = require('gulp-mustache'),
     download = require('gulp-download'),
     cssMin = require('gulp-cssnano'),
     uglify = require('gulp-uglify'),
     jade = require('gulp-jade'),
     nop = require('gulp-nop'),
     rename = require('gulp-rename'),
-    path = require('path');
+    path = require('path'),
+    fs = require('fs');
 
 var finalDest = process.env.DESTINATION || "./dest/",
+    configuration = require('./configuration.json'),
     files = [
         /* --- HTML */
 
@@ -104,7 +107,7 @@ var finalDest = process.env.DESTINATION || "./dest/",
         /* Base CSS */
     {
         type: 'css',
-        file: 'https://bootswatch.com/darkly/bootstrap.min.css'
+        file: `https://bootswatch.com/${configuration.bootstrapTheme}/bootstrap.min.css`
     },
         /* EmojiOne library CSS */
     {
@@ -151,7 +154,7 @@ gulp.task('default', [], function(){
                 break;
             case 'jade':
                 dest = finalDest+'./';
-                src.pipe(jade()).pipe(rename(name)).pipe(gulp.dest(dest));
+                src.pipe(mustache(configuration)).pipe(jade()).pipe(rename(name)).pipe(gulp.dest(dest));
         }
     });
 });
