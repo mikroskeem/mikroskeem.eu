@@ -4,7 +4,7 @@ define ['marked', 'emojione'], (marked, emojione) ->
     base = "<h#{level}"
     if level <= 1
       base = "#{base} class=\"heading\""
-    "#{base} id=\"#{this.options.headerPrefix + raw.toLowerCase().replace(/[^\w]+/g, "-")}\">#{text}</h#{level}>\n"
+    "#{base} name=\"#{this.options.headerPrefix + raw.toLowerCase().replace(/[^\w]+/g, "-")}\">#{text}</h#{level}>\n"
   customRenderer.link = (link, title, text) ->
     c = "" unless c
     "<a #{if /INNER../.test link then "class=\"innerUrl\" href=\"/pages/#{link.replace "INNER..", ""}\"" else "target=\"_blank\" href=\"#{link}\""} title=\"#{title}\">#{text}</a>"
