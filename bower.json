@@ -25,18 +25,17 @@
     "tests"
   ],
   "dependencies": {
-    "nanobar": "^0.4.1",
-    "marked": "^0.3.5",
     "lazysizes": "^1.5.0",
     "requirejs": "^2.2.0",
     "hammerjs": "^2.0.6",
     "emojione": "^2.1.4",
-    "dexie": "^1.3.6"
+    "dexie": "^1.3.6",
+    "nanobar": "mikroskeem/nanobar#master"
   },
   "resolutions": {
     "dexie": "^1.3.6",
     "lazysizes": "^1.5.0",
-    "nanobar": "master",
-    "requirejs": "^2.2.0"
+    "requirejs": "^2.2.0",
+    "nanobar": "master"
   }
 }
