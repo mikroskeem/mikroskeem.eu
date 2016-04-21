@@ -12,3 +12,4 @@ requirejs.config
     nanobar: 'nanobar.min'
     hammer: 'hammer.min'
     emojione: 'emojione.min'
+    promise_shim: 'promise.min'

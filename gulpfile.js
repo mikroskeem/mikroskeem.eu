@@ -61,6 +61,11 @@ var finalDest = process.env.DESTINATION || "./dest/",
         type: 'js',
         file: './bower_components/emojione/lib/js/emojione.min.js'
     },
+        /* Promise shim */
+    {
+        type: 'js',
+        file: './bower_components/es6-promise-polyfill/promise.min.js'
+    },
         /* -- Own code */
 
         /* Main page logic */

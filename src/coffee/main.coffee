@@ -65,7 +65,8 @@ require ['/static/js/require-cfg.min.js'], ->
     'marked'
     'marked_customrenderer'
     'nanobar'
-  ], (marked, customRenderer, progress) ->
+    'promise_shim'
+  ], (marked, customRenderer, progress, Promise) ->
     marked.setOptions
       renderer: customRenderer
       sanitize: false
