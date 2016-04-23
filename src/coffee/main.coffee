@@ -185,7 +185,7 @@ require ['/static/js/require-cfg.min.js'], ->
         return
       ), (xhr) ->
         console.error xhr
-        contentelem.innerHTML = "<h1 class='heading'>#{xhr.xhr.status}</h1>"
+        contentelem.innerHTML = "<h1 class='heading'>#{xhr.status}</h1>"
         loadingBar.go 100
         return
       return
