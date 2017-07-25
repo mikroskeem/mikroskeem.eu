@@ -5,16 +5,16 @@ So, here it is, my awesome webpage. It was created with idea to render everythin
 This idea gives portability, I can migrate my page to every server, since there is no server-side code requred (but webserver configuring is).
 
 ### Building
-You need to have gulp and bower in path (`npm install -g gulp bower`) and nginx installed (to run bundled mocha tests)
+You need to have gulp and bower in path (`yarn global add gulp bower`) and nginx installed (to run bundled mocha tests)
 
 ```
 $ git clone --depth=1 git@gitlab.com:mikroskeem/mikroskeem.eu.git
 $ cd mikroskeem.eu
-$ npm run build
-$ npm run test-page
-$ npm run test-server
+$ yarn run build
+$ yarn run test-page
+$ yarn run test-server
 (in another terminal)
-$ npm test
+$ yarn test
 ```
 
 ### Configuring web server
