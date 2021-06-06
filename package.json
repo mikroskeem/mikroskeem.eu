@@ -10,5 +10,8 @@
     "html-minifier": "^4.0.0",
     "imml": "^1.0.3",
     "jsdom": "^16.6.0"
+  },
+  "scripts": {
+    "build": "rm -rf build; mkdir -p build; imml -o build/index.html site.imml"
   }
 }
