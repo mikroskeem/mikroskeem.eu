@@ -4,5 +4,11 @@
   "main": "index.js",
   "repository": "https://github.com/mikroskeem/mikroskeem.eu",
   "author": "Mark Vainomaa <mikroskeem@mikroskeem.eu>",
-  "license": "CC-BY-NC-SA-4.0"
+  "license": "CC-BY-NC-SA-4.0",
+  "dependencies": {
+    "commander": "^7.2.0",
+    "html-minifier": "^4.0.0",
+    "imml": "^1.0.3",
+    "jsdom": "^16.6.0"
+  }
 }
