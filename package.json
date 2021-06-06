@@ -12,6 +12,7 @@
     "jsdom": "^16.6.0"
   },
   "scripts": {
-    "build": "rm -rf build; mkdir -p build; imml -o build/index.html site.imml"
+    "build": "rm -rf build; mkdir -p build; imml -o build/index.html site.imml",
+    "tarball": "yarn build && tar -C build --zstd -cf - . > built_$(date +%s).tar.zstd"
   }
 }

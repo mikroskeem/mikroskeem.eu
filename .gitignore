@@ -1,6 +1,7 @@
 /.direnv
 /.envrc
 /build
+/built_*.tar*
 
 # Logs
 logs
